@@ -3,8 +3,8 @@ package main
 import (
 	"fmt"
 	"github.com/gin-gonic/gin"
+	"github.com/olahol/melody"
 	log "github.com/sirupsen/logrus"
-	"polling-to-ws/broadcast"
 	"polling-to-ws/config"
 	"polling-to-ws/redAlert"
 )
@@ -19,15 +19,13 @@ func main() {
 	log.SetLevel(conf.LogLevel)
 
 	r := gin.Default()
-	hub := broadcast.NewHub()
-	go hub.Run()
+	m := melody.New()
 
-	r.GET("/ws", func(ctx *gin.Context) {
-		broadcast.ServeWs(hub, ctx.Writer, ctx.Request)
-
+	r.GET("/ws", func(c *gin.Context) {
+		m.HandleRequest(c.Writer, c.Request)
 	})
 
-	ra := redAlert.NewRedAlertClient(hub)
+	ra := redAlert.NewRedAlertClient(m)
 	go ra.Run()
 
 	addr := fmt.Sprintf(":%s", conf.Port)

@@ -4,19 +4,19 @@ import (
 	"bytes"
 	"encoding/json"
 	"errors"
+	"github.com/olahol/melody"
 	log "github.com/sirupsen/logrus"
 	"io"
 	"net/http"
-	"polling-to-ws/broadcast"
 	"time"
 )
 
 type RedAlertClient struct {
-	hub           *broadcast.Hub
+	hub           *melody.Melody
 	previousAlert []byte
 }
 
-func NewRedAlertClient(hub *broadcast.Hub) RedAlertClient {
+func NewRedAlertClient(hub *melody.Melody) RedAlertClient {
 	return RedAlertClient{hub: hub}
 }
 
@@ -44,7 +44,9 @@ func (c *RedAlertClient) Run() {
 			continue
 		}
 
-		c.hub.Broadcast <- data
+		if err := c.hub.Broadcast(data); err != nil {
+			log.Error(err)
+		}
 		log.Info("Sent")
 
 	}

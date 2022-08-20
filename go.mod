@@ -5,6 +5,7 @@ go 1.17
 require (
 	github.com/gin-gonic/gin v1.8.1
 	github.com/gorilla/websocket v1.5.0
+	github.com/olahol/melody v0.0.0-20180227134253-7bd65910e5ab
 	github.com/sirupsen/logrus v1.9.0
 	github.com/spf13/viper v1.12.0
 )
